@@ -72,4 +72,13 @@ describe Orgmode::RegexpHelper do
     end
     str.should eql("\"Bing\":http://www.bing.com")
   end
+
+  it "should allow url rewriting (no url)" do
+    e = Orgmode::RegexpHelper.new
+    str = e.rewrite_links("Bing") do |link,text|
+      text ||= link
+      "\"#{text}\":#{link}"
+    end
+    str.should eql("Bing")
+  end
 end                             # describe Orgmode::RegexpHelper
