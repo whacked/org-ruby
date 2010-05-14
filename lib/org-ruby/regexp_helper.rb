@@ -99,6 +99,22 @@ module Orgmode
       end
     end
 
+    ORG_LINK_OR_URL_REGEXP = /
+                              (?: # link with text
+                               \[\[
+                                 ((?:https?|file)[^\]]*)
+                               \]\[
+                                 ([^\]]*)
+                               \]\]
+                              )
+                               |
+                              (?:
+                               \[\[ # url link
+                                 ((?:https?|file)[^\]]*)
+                               \]\]
+                              )
+                               |
+                              (?:((?:https?|file):[^\]\s]*)(\]\])?)/x # bare url
     # = Summary
     #
     # Rewrite org-mode links in a string to markup suitable to the
@@ -125,11 +141,17 @@ module Orgmode
     # HTML-style link, and that is how things will get recorded in
     # +result+.
     def rewrite_links(str) #  :yields: link, text
-      i = str.gsub(@org_link_regexp) do |match|
-        yield $1, nil
-      end
-      i.gsub(@org_link_text_regexp) do |match|
-        yield $1, $2
+      str.gsub(ORG_LINK_OR_URL_REGEXP) do
+        m = Regexp.last_match
+        if m[1] && m[2]
+          yield m[1], m[2]
+        elsif m[3]
+          yield m[3], nil
+        elsif m[4]
+          yield m[4], nil
+        else
+          m[0]
+        end
       end
     end
     
