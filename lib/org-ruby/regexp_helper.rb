@@ -60,7 +60,6 @@ module Orgmode
       @logger = Logger.new(STDERR)
       @logger.level = Logger::WARN
       build_org_emphasis_regexp
-      build_org_link_regexp
     end
 
     # Finds all emphasis matches in a string.
@@ -155,9 +154,12 @@ module Orgmode
       end
     end
     
+    ORG_IMG_REGEXP = /\[\[
+        ([^\]]*\.(jpg|jpeg|gif|png)) # Like a normal URL, but must end with a specified extension
+      \]\]/xi
     # Rewrites all of the inline image tags.
     def rewrite_images(str) #  :yields: image_link
-      str.gsub(@org_img_regexp) do |match|
+      str.gsub(ORG_IMG_REGEXP) do |match|
         yield $1
       end
     end
@@ -174,18 +176,5 @@ module Orgmode
       @logger.debug "Just created regexp: #{@org_emphasis_regexp}"
     end
 
-    def build_org_link_regexp
-      @org_link_regexp = /\[\[
-                             ([^\]]*) # This is the URL
-                          \]\]/x
-      @org_img_regexp = /\[\[
-          ([^\]]*\.(jpg|jpeg|gif|png)) # Like a normal URL, but must end with a specified extension
-        \]\]/xi
-      @org_link_text_regexp = /\[\[
-                                 ([^\]]*) # This is the URL
-                               \]\[
-                                 ([^\]]*) # This is the friendly text
-                               \]\]/x
-    end
   end                           # class Emphasis
 end                             # module Orgmode
