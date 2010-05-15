@@ -208,7 +208,8 @@ module Orgmode
         when :include_src
 
           output_buffer.push_mode(:include_src)
-          File.foreach(line.include_file) do |fline|
+          include_file = line.include_file
+          File.foreach(include_file) do |fline|
             output_buffer << fline
           end
 
