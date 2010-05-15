@@ -131,6 +131,7 @@ describe Orgmode::Parser do
     # Dynamic generation of examples from each *.org file in html_examples.
     # Each of these files is convertable to HTML.
     data_directory = File.join(File.dirname(__FILE__), "html_examples")
+    process_erb_files data_directory
     org_files = File.expand_path(File.join(data_directory, "*.org" ))
     files = Dir.glob(org_files)
     files.each do |file|

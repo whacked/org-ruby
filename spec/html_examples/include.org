@@ -1,5 +1,0 @@
-Include sample
-#+INCLUDE: /m/home/rubikitch/src/org-ruby/spec/html_examples/include-code.rb src ruby-mode
-normal
-#+INCLUDE: /m/home/rubikitch/src/org-ruby/spec/html_examples/include-code.rb src ruby-mode
-normal
