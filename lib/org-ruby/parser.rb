@@ -155,7 +155,7 @@ module Orgmode
     end
 
     # Converts the loaded org-mode file to HTML.
-    def to_html
+    def to_html(output_buffer_class=HtmlOutputBuffer)
       mark_trees_for_export
       export_options = {
         :decorate_title => true,
@@ -164,7 +164,7 @@ module Orgmode
       }
       export_options[:skip_tables] = true if not export_tables?
       output = ""
-      output_buffer = HtmlOutputBuffer.new(output, export_options)
+      output_buffer = output_buffer_class.new(output, export_options)
       
       if @in_buffer_settings["TITLE"] then
 
