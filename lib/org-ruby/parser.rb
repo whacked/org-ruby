@@ -28,6 +28,9 @@ module Orgmode
     # Array of custom keywords.
     attr_reader :custom_keywords
 
+    # Filename
+    attr_accessor :filename
+
     # Regexp that recognizes words in custom_keywords.
     def custom_keyword_regexp
       return nil if @custom_keywords.empty?
@@ -86,6 +89,7 @@ module Orgmode
       @header_lines = []
       @in_buffer_settings = { }
       @options = { }
+      @filename = nil
       mode = :normal
       previous_line = nil
       @lines.each do |line|
@@ -135,7 +139,9 @@ module Orgmode
     # Creates a new parser from the data in a given file
     def self.load(fname)
       lines = IO.read(fname).split("\n")
-      return self.new(lines)
+      p = self.new(lines)
+      p.filename = fname
+      p
     end
 
     # Saves the loaded orgmode file as a textile file.
