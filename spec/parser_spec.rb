@@ -136,11 +136,11 @@ describe Orgmode::Parser do
     files = Dir.glob(org_files)
     files.each do |file|
       basename = File.basename(file, ".org")
-      textile_name = File.join(data_directory, basename + ".html")
-      textile_name = File.expand_path(textile_name)
+      html_name = File.join(data_directory, basename + ".html")
+      html_name = File.expand_path(html_name)
 
       it "should convert #{basename}.org to HTML" do
-        expected = IO.read(textile_name)
+        expected = IO.read(html_name)
         expected.should be_kind_of(String)
         parser = Orgmode::Parser.new(IO.read(file))
         actual = parser.to_html
