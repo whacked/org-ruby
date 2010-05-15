@@ -119,7 +119,7 @@ describe Orgmode::Parser do
       it "should convert #{basename}.org to Textile" do
         expected = IO.read(textile_name)
         expected.should be_kind_of(String)
-        parser = Orgmode::Parser.new(IO.read(file))
+        parser = Orgmode::Parser.load(file)
         actual = parser.to_textile
         actual.should be_kind_of(String)
         actual.should == expected
@@ -142,7 +142,7 @@ describe Orgmode::Parser do
       it "should convert #{basename}.org to HTML" do
         expected = IO.read(html_name)
         expected.should be_kind_of(String)
-        parser = Orgmode::Parser.new(IO.read(file))
+        parser = Orgmode::Parser.load(file)
         actual = parser.to_html
         actual.should be_kind_of(String)
         actual.should == expected
