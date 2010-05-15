@@ -134,7 +134,7 @@ module Orgmode
 
     # Creates a new parser from the data in a given file
     def self.load(fname)
-      lines = IO.readlines(fname)
+      lines = IO.read(fname).split("\n")
       return self.new(lines)
     end
 
