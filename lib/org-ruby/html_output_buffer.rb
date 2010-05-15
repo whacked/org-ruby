@@ -145,20 +145,24 @@ module Orgmode
       str = @re_help.rewrite_emphasis(str) do |marker, s|
         "#{Tags[marker][:open]}#{s}#{Tags[marker][:close]}"
       end
-      str = @re_help.rewrite_images(str) do |link|
-        "<img src=\"#{link}\" />"
-      end
+      # str = @re_help.rewrite_images(str) do |link|
+      #   "<img src=\"#{link}\" />"
+      # end
       str = @re_help.rewrite_links(str) do |link, text|
-        text ||= link
-        link = link.sub(/^file:(.*)::(.*?)$/) do
-
-          # We don't support search links right now. Get rid of it.
-
-          "file:#{$1}"
+        if link =~ /(?:jpg|jpeg|gif|png)$/
+          "<img src=\"#{link}\" />"
+        else
+          text ||= link
+          link = link.sub(/^file:(.*)::(.*?)$/) do
+            
+            # We don't support search links right now. Get rid of it.
+            
+            "file:#{$1}"
+          end
+          link = link.sub(/^file:/i, "") # will default to HTTP
+          link = link.sub(/\.org$/i, ".html")
+          "<a href=\"#{link}\">#{text}</a>"
         end
-        link = link.sub(/^file:/i, "") # will default to HTTP
-        link = link.sub(/\.org$/i, ".html")
-        "<a href=\"#{link}\">#{text}</a>"
       end
       if (@output_type == :table_row) then
         str.gsub!(/^\|\s*/, "<td>")
