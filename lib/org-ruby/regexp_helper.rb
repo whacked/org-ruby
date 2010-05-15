@@ -154,14 +154,9 @@ module Orgmode
       end
     end
     
-    ORG_IMG_REGEXP = /\[\[
-        ([^\]]*\.(jpg|jpeg|gif|png)) # Like a normal URL, but must end with a specified extension
-      \]\]/xi
     # Rewrites all of the inline image tags.
     def rewrite_images(str) #  :yields: image_link
-      str.gsub(ORG_IMG_REGEXP) do |match|
-        yield $1
-      end
+      raise "Do not use rewrite_images, use rewrite_links instead!"
     end
 
     private
