@@ -109,7 +109,7 @@ module Orgmode
                                |
                               (?:
                                \[\[ # url link
-                                 ((?:https?|file)[^\]]*)
+                                 ([^\]]*)
                                \]\]
                               )
                                |
