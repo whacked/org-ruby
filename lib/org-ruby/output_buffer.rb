@@ -54,7 +54,7 @@ module Orgmode
       push_mode(:normal)
     end
 
-    Modes = [:normal, :ordered_list, :unordered_list, :blockquote, :src, :example, :table, :inline_example]
+    Modes = [:normal, :ordered_list, :unordered_list, :blockquote, :src, :example, :table, :inline_example, :include_src]
 
     def current_mode
       @mode_stack.last
@@ -86,6 +86,7 @@ module Orgmode
       end
       push_mode(:inline_example) if line.inline_example? and current_mode != :inline_example
       pop_mode(:inline_example) if current_mode == :inline_example && !line.inline_example?
+      pop_mode(:include_src) if current_mode == :include_src && !line.include_src?
       push_mode(:table) if enter_table?
       pop_mode(:table) if exit_table?
       @buffered_lines.push(line)
@@ -154,7 +155,7 @@ module Orgmode
 
     def mode_is_code(mode)
       case mode
-      when :src, :inline_example, :example
+      when :src, :inline_example, :example, :include_src
         true
       else
         false

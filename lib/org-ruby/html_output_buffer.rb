@@ -25,7 +25,8 @@ module Orgmode
       :blockquote => "blockquote",
       :example => "pre",
       :src => "pre",
-      :inline_example => "pre"
+      :inline_example => "pre",
+      :include_src => "pre",
     }
 
     attr_reader :options
@@ -48,7 +49,7 @@ module Orgmode
       if ModeTag[mode] then
         output_indentation
         css_class = ""
-        css_class = " class=\"src\"" if mode == :src
+        css_class = " class=\"src\"" if [:src, :include_src].include? mode
         css_class = " class=\"example\"" if (mode == :example || mode == :inline_example)
         @logger.debug "#{mode}: <#{ModeTag[mode]}#{css_class}>\n" 
         @output << "<#{ModeTag[mode]}#{css_class}>\n" unless mode == :table and skip_tables?

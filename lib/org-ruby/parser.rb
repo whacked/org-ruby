@@ -199,6 +199,13 @@ module Orgmode
         output_buffer.prepare(line)
 
         case line.paragraph_type
+        when :include_src
+
+          output_buffer.push_mode(:include_src)
+          File.foreach(line.include_file) do |fline|
+            output_buffer << fline
+          end
+
         when :metadata, :table_separator, :blank
 
           output_buffer << line.line if output_buffer.preserve_whitespace?          
