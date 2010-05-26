@@ -150,13 +150,13 @@ module Orgmode
     end
     
     def format_emphasis(str)
-      str = @re_help.rewrite_emphasis(str) do |marker, s|
+      @re_help.rewrite_emphasis(str) do |marker, s|
         "#{Tags[marker][:open]}#{s}#{Tags[marker][:close]}"
       end
     end
     
     def format_links(str)
-      str = @re_help.rewrite_links(str) do |link, text|
+      @re_help.rewrite_links(str) do |link, text|
         if link =~ /(?:jpg|jpeg|gif|png)$/
           "<img src=\"#{link}\" />"
         else
