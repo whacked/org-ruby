@@ -143,9 +143,19 @@ module Orgmode
     # Applies inline formatting rules to a string.
     def inline_formatting(str)
       str.rstrip!
+      str = format_emphasis(str)
+      str = format_links(str)
+      format_tables!(str)
+      str
+    end
+    
+    def format_emphasis(str)
       str = @re_help.rewrite_emphasis(str) do |marker, s|
         "#{Tags[marker][:open]}#{s}#{Tags[marker][:close]}"
       end
+    end
+    
+    def format_links(str)
       str = @re_help.rewrite_links(str) do |link, text|
         if link =~ /(?:jpg|jpeg|gif|png)$/
           "<img src=\"#{link}\" />"
@@ -162,6 +172,9 @@ module Orgmode
           "<a href=\"#{link}\">#{text}</a>"
         end
       end
+    end
+
+    def format_tables!(str)
       if (@output_type == :table_row) then
         str.gsub!(/^\|\s*/, "<td>")
         str.gsub!(/\s*\|$/, "</td>")
@@ -174,6 +187,5 @@ module Orgmode
       end
       str
     end
-
   end                           # class HtmlOutputBuffer
 end                             # module Orgmode
