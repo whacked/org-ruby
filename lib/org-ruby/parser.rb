@@ -207,11 +207,11 @@ module Orgmode
         case line.paragraph_type
         when :include_src
 
-          output_buffer.push_mode(:include_src)
+          output_buffer.push_mode(:include_src, :lang => line.include_lang)
           if filename
             include_file = File.expand_path(line.include_file, File.dirname(filename))
           else
-            include_file = line.include_file
+            include_file = File.expand_path line.include_file
           end
           File.foreach(include_file) {|fline| output_buffer << fline }
 

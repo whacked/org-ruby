@@ -64,7 +64,7 @@ module Orgmode
       (current_mode == :ordered_list) or (current_mode == :unordered_list)
     end
 
-    def push_mode(mode)
+    def push_mode(mode, opts={})
       raise "Not a recognized mode: #{mode}" unless Modes.include?(mode)
       @mode_stack.push(mode)
     end

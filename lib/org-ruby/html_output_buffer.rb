@@ -45,7 +45,7 @@ module Orgmode
     # Output buffer is entering a new mode. Use this opportunity to
     # write out one of the block tags in the ModeTag constant to put
     # this information in the HTML stream.
-    def push_mode(mode)
+    def push_mode(mode, opts={})
       if ModeTag[mode] then
         output_indentation
         css_class = ""
@@ -56,7 +56,7 @@ module Orgmode
         # Entering a new mode obliterates the title decoration
         @title_decoration = ""
       end
-      super(mode)
+      super(mode, opts)
     end
 
     # We are leaving a mode. Close any tags that were opened when

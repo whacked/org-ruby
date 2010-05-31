@@ -29,6 +29,7 @@ module Orgmode
       @assigned_paragraph_type = nil
       @indent = $&.length unless blank?
       @include_file = nil
+      @include_lang = nil
     end
 
     def to_s
@@ -113,13 +114,13 @@ module Orgmode
       table_row? or table_separator? or table_header?
     end
 
-    IncludeSrcRegexp = /^\s*#\+INCLUDE: (.+) (?:src|example)/
+    IncludeSrcRegexp = /^\s*#\+INCLUDE: (.+)\s+(?:src|example)(?:\s+(\S+))?/
     def include_src?
       ret = (@line =~ IncludeSrcRegexp)
-      @include_file = $1 if ret
+      @include_file, @include_lang = $1, $2 if ret
       ret
     end
-    attr_reader :include_file
+    attr_reader :include_file, :include_lang
 
     BlockRegexp = /^\s*#\+(BEGIN|END)_(\w*)/
 

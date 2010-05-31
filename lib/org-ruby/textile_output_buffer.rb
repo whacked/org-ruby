@@ -9,8 +9,8 @@ module Orgmode
       @add_paragraph = false
     end
 
-    def push_mode(mode)
-      super(mode)
+    def push_mode(mode, opts={})
+      super(mode, opts)
       @output << "bc.. " if mode_is_code(mode)
     end
 
