@@ -18,7 +18,7 @@ def process_erb_files(data_directory)
 end
 
 
-Spec::Runner.configure do |config|
+RSpec.configure do |config|
   # == Mock Framework
   #
   # RSpec uses it's own mocking framework by default. If you prefer to
