@@ -24,6 +24,23 @@ describe Orgmode::Line do
     end
   end
 
+  describe "horizontal rules" do
+    
+    it "should recognize 5 or more '-' in a single line" do
+      ["-----", "-----------"].each do |txt|
+        line = Orgmode::Line.new txt
+        line.horizontal_rule?.should be_true
+      end
+    end
+    
+    it "should reject anything less than 5 '-', or non-dash" do
+      ["- ", "--", "======", "----"].each do |txt|
+        line = Orgmode::Line.new txt
+        line.horizontal_rule?.should_not be_true
+      end
+    end
+  end
+
   [": inline", " :inline", "\t\t:\tinline"].each do |inline_example|
     it "should recognize this inline example: #{inline_example}" do
       Orgmode::Line.new(inline_example).inline_example?.should be_true
@@ -32,16 +49,22 @@ describe Orgmode::Line do
     
 
   it "should recognize plain lists" do
-    list_formats = ["-",
-                    "+",
-                    "  -",
-                    "  +",
-                    " 1.",
-                    " 2)"]
+    list_formats = ["- ",
+                    "+ ",
+                    "  - ",
+                    "  + ",
+                    "  * ",
+                    " 1. ",
+                    " 2) "]
     list_formats.each do |list|
       line = Orgmode::Line.new list
       line.plain_list?.should be_true
     end
+  end
+
+  it "should recognize definition lists" do
+    line = Orgmode::Line.new "- hello :: world"
+    line.definition_list?.should be_true
   end
 
   it "should recognize table rows" do
@@ -66,7 +89,7 @@ describe Orgmode::Line do
     Orgmode::Line.new("hello!").paragraph_type.should eql(:paragraph)
   end
 
-  it "should recognize BEGIN and END comments" do
+  it "should recognize BEGIN and END comments, in both upper and lowercase" do
     begin_examples = {
       "#+BEGIN_SRC emacs-lisp -n -r\n" => "SRC",
       "#+BEGIN_EXAMPLE" => "EXAMPLE",
@@ -79,18 +102,22 @@ describe Orgmode::Line do
       "\t#+END_QUOTE  " => "QUOTE"
     }
 
-    begin_examples.each_key do |str|
-      line = Orgmode::Line.new str
-      line.comment?.should be_true
-      line.begin_block?.should be_true
-      line.block_type.should eql(begin_examples[str])
+    begin_examples.each do |str_orig, type|
+      [str_orig, str_orig.downcase].each do |str|
+        line = Orgmode::Line.new str
+        line.comment?.should be_true
+        line.begin_block?.should be_true
+        line.block_type.should eql(type)
+      end
     end
 
-    end_examples.each_key do |str|
-      line = Orgmode::Line.new str
-      line.comment?.should be_true
-      line.end_block?.should be_true
-      line.block_type.should eql(end_examples[str])
+    end_examples.each do |str_orig, type|
+      [str_orig, str_orig.downcase].each do |str|
+        line = Orgmode::Line.new str
+        line.comment?.should be_true
+        line.end_block?.should be_true
+        line.block_type.should eql(type)
+      end
     end
   end
 

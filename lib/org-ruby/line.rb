@@ -58,7 +58,12 @@ module Orgmode
       ordered_list? or unordered_list?
     end
 
-    UnorderedListRegexp = /^\s*(-|\+)\s*/
+    # Test if a line is a horizontal rule
+    def horizontal_rule?
+      @line =~ /\s*-{5,}\s*/
+    end
+
+    UnorderedListRegexp = /^(?:\s*(-|\+)|\s+\*)\s+/
 
     def unordered_list?
       check_assignment_or_regexp(:unordered_list, UnorderedListRegexp)
@@ -68,10 +73,16 @@ module Orgmode
       @line.sub(UnorderedListRegexp, "")
     end
 
-    OrderedListRegexp = /^\s*\d+(\.|\))\s*/
+    OrderedListRegexp = /^\s*\d+(\.|\))\s+/
 
     def ordered_list?
       check_assignment_or_regexp(:ordered_list, OrderedListRegexp)
+    end
+
+    DefinitionListRegexp = /^\s*-\s*.+::.+/
+
+    def definition_list?
+      check_assignment_or_regexp(:definition_list, DefinitionListRegexp)
     end
 
     def strip_ordered_list_tag
@@ -116,28 +127,28 @@ module Orgmode
 
     IncludeSrcRegexp = /^\s*#\+INCLUDE: (.+)\s+(?:src|example)(?:\s+(\S+))?/
     def include_src?
-      ret = (@line =~ IncludeSrcRegexp)
+      ret = (@line.upcase =~ IncludeSrcRegexp)
       @include_file, @include_lang = $1, $2 if ret
       ret
     end
     attr_reader :include_file, :include_lang
 
-    BlockRegexp = /^\s*#\+(BEGIN|END)_(\w*)/
+    BlockRegexp = /^\s*#\+(BEGIN|END)_(\w*)/i
 
     def begin_block?
-      @line =~ BlockRegexp && $1 == "BEGIN"
+      @line =~ BlockRegexp && $1.upcase == "BEGIN"
     end
 
     def end_block?
-      @line =~ BlockRegexp && $1 == "END"
+      @line =~ BlockRegexp && $1.upcase == "END"
     end
 
     def block_type
-      $2 if @line =~ BlockRegexp
+      $2.upcase if @line =~ BlockRegexp
     end
 
     def code_block_type?
-      block_type =~ /^(EXAMPLE|SRC)$/
+      block_type.upcase =~ /^(EXAMPLE|SRC)$/
     end
 
     InlineExampleRegexp = /^\s*:/
@@ -173,6 +184,7 @@ module Orgmode
     def paragraph_type
       return :include_src if include_src?
       return :blank if blank?
+      return :horizontal_rule if horizontal_rule?
       return :ordered_list if ordered_list?
       return :unordered_list if unordered_list?
       return :metadata if metadata?

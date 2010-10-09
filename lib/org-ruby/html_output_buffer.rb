@@ -79,28 +79,32 @@ module Orgmode
         @output << @buffer << "\n"
       else
         if (@buffer.length > 0) then
-          unless buffer_mode_is_table? and skip_tables?
-            @logger.debug "FLUSH      ==========> #{@buffer_mode}"
-            output_indentation
-            @output << "<#{HtmlBlockTag[@output_type]}#{@title_decoration}>" 
-            if (@buffered_lines[0].kind_of?(Headline)) then
-              headline = @buffered_lines[0]
-              raise "Cannot be more than one headline!" if @buffered_lines.length > 1
-              if @options[:export_heading_number] then
-                level = headline.level
-                heading_number = get_next_headline_number(level)
-                output << "<span class=\"heading-number heading-number-#{level}\">#{heading_number} </span>"
-              end
-              if @options[:export_todo] and headline.keyword then
-                keyword = headline.keyword
-                output << "<span class=\"todo-keyword #{keyword}\">#{keyword} </span>"
-              end
-            end
-            @output << inline_formatting(@buffer) 
-            @output << "</#{HtmlBlockTag[@output_type]}>\n"
-            @title_decoration = ""
+          if @output_type == :horizontal_rule then
+            @output << "<hr />\n"
           else
-            @logger.debug "SKIP       ==========> #{@buffer_mode}"
+            unless buffer_mode_is_table? and skip_tables?
+              @logger.debug "FLUSH      ==========> #{@buffer_mode}"
+              output_indentation
+              @output << "<#{HtmlBlockTag[@output_type]}#{@title_decoration}>" 
+              if (@buffered_lines[0].kind_of?(Headline)) then
+                headline = @buffered_lines[0]
+                raise "Cannot be more than one headline!" if @buffered_lines.length > 1
+                if @options[:export_heading_number] then
+                  level = headline.level
+                  heading_number = get_next_headline_number(level)
+                  output << "<span class=\"heading-number heading-number-#{level}\">#{heading_number} </span>"
+                end
+                if @options[:export_todo] and headline.keyword then
+                  keyword = headline.keyword
+                  output << "<span class=\"todo-keyword #{keyword}\">#{keyword} </span>"
+                end
+              end
+              @output << inline_formatting(@buffer) 
+              @output << "</#{HtmlBlockTag[@output_type]}>\n"
+              @title_decoration = ""
+            else
+              @logger.debug "SKIP       ==========> #{@buffer_mode}"
+            end
           end
         end
       end

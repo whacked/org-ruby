@@ -10,6 +10,7 @@ describe Orgmode::Headline do
   it "should reject headlines without headlines at the start" do
     Orgmode::Headline.headline?("  nope!").should be_nil
     Orgmode::Headline.headline?("  tricked you!!!***").should be_nil
+    Orgmode::Headline.headline?("  * asterisk bullet point").should be_nil
   end
 
   it "should reject improper initialization" do
