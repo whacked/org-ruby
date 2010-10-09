@@ -21,7 +21,7 @@ Bones {
   colorize false                # Windows consoles won't colorize
   gem.need_tar false            # Can't TAR from Windows
   depend_on 'rubypants'
-  spec.opts ['-D', '--color']
+  # spec.opts ['-D', '--color'] # deprecated for RSpec2
 }
 
 
